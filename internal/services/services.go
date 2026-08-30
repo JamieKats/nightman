@@ -1,7 +1,7 @@
-// Package honeypot defines the interface every mocked LLM service
+// Package services defines the interface every mocked LLM service
 // implements. Concrete implementations live in sub-packages (ollama,
 // openai, vllm, anthropic).
-package honeypot
+package services
 
 import "net/http"
 

@@ -31,7 +31,7 @@ cmd/nightman/        binary entrypoint
 internal/
   config/            YAML + env config loading
   server/            routing layer (port/path -> service)
-  honeypot/          Service interface + per-service mocks
+  services/          Service interface + per-service mocks
     ollama/  openai/  vllm/  anthropic/
   response/          canned template responses (embedded)
   capture/           per-request logging model

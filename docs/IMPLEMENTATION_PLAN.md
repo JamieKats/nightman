@@ -18,7 +18,7 @@ All build decisions are settled — see [Decisions](#decisions) at the end.
 - **Isolate hard.** Deny-by-default egress, no real secrets, dedicated
   read-only DB role for the public dashboard.
 - Single Go binary for v1; per-service logic stays behind the
-  `honeypot.Service` interface so a handler can be split into its own
+  `services.Service` interface so a handler can be split into its own
   container later without a rewrite.
 
 ---
@@ -102,8 +102,8 @@ expand in step 20.
 *Done when:* pools load at init, `Random()` is uniform, missing-pool is a
 startup error.
 
-**7. Ollama service mock** (`internal/honeypot/ollama`)
-Implement `honeypot.Service` for `/api/tags`, `/api/show`, `/api/generate`,
+**7. Ollama service mock** (`internal/services/ollama`)
+Implement `services.Service` for `/api/tags`, `/api/show`, `/api/generate`,
 `/api/chat` — **non-streaming responses only** at this step. Valid Ollama
 JSON shapes, plausible `eval_count` / `eval_duration` fields, a small fake
 model list.
@@ -137,9 +137,9 @@ the `requests` table, with `gorm.io/datatypes`.`JSON` for the `headers`
 and `body` columns. Expose `Insert(ctx, capture.Record)`,
 `InsertBatch(ctx, []capture.Record)` (via `CreateInBatches`), and `Ping`
 (through the underlying `*sql.DB`). Opened with the `nightman_ingest` DSN.
-*Done when:* an integration test inserts and reads back a record against a
-real Postgres (testcontainers / dockertest), with the migrations applied
-first.
+*Done when:* the store has table-driven tests against a mocked DB layer
+(e.g. `go-sqlmock` behind GORM). Real-Postgres integration via
+testcontainers is deferred — see [Future improvements](#future-improvements).
 
 **11. Async capture sink**
 Bounded channel + background writer that batches `InsertBatch` calls
@@ -176,16 +176,16 @@ disconnect is handled without leaking goroutines.
 **15. Ollama streaming variants** — `stream: true` on `/api/generate` and
 `/api/chat`.
 
-**16. OpenAI-compatible service** (`internal/honeypot/openai`)
+**16. OpenAI-compatible service** (`internal/services/openai`)
 `/v1/models`, `/v1/completions`, `/v1/chat/completions` (streaming and
 non-streaming). Emphasise `Authorization: Bearer sk-…` capture. Plausible
 `usage` object, `finish_reason`, `id`/`created` fields.
 
-**17. vLLM / TGW / LM Studio** (`internal/honeypot/vllm`)
+**17. vLLM / TGW / LM Studio** (`internal/services/vllm`)
 Layer the small shape differences (extra fields, model-name conventions,
 `/v1` quirks) on top of the OpenAI shape.
 
-**18. Anthropic `/v1/messages`** (`internal/honeypot/anthropic`)
+**18. Anthropic `/v1/messages`** (`internal/services/anthropic`)
 `x-api-key` capture, Messages response shape, `input_tokens` /
 `output_tokens`, SSE event sequence for streaming.
 
@@ -215,12 +215,15 @@ counts by service/status, capture queue depth, dropped-record count,
 rate-limit hits.
 
 **25. Test suite** — unit (template selection, capture extraction, rate
-limiter), handler integration (`httptest` per service), store integration
-(testcontainers). Target a meaningful coverage floor in CI.
+limiter), handler tests via `httptest` per service, store tests against a
+mocked DB layer. Every path that handles an incoming request must have
+test cases. Target a meaningful coverage floor in CI.
 
 **26. CI** — GitHub Actions: `golangci-lint`, `go test ./...`, `go build`,
 and (optional) build + push a container image. Scaffold a minimal
-lint+test workflow as soon as Phase 2 lands; expand it here.
+lint+test workflow as soon as Phase 2 lands; expand it here. **Future
+improvement:** add testcontainers-backed integration tests (real Postgres
+in CI) once the mocked-DB suite is stable.
 **← M4**
 
 ---
@@ -291,6 +294,9 @@ Deferred build choices (to experiment with once something is running):
 - More impersonated ports / services — e.g. LM Studio's default port,
   text-generation-webui, a bare `:80` / `:8000`. v1 stays with `11434`
   and `8080` only.
+- testcontainers integration tests — spin up a real Postgres in CI to
+  exercise the store against actual SQL, once the mocked-DB suite is
+  stable. Added when the CI/CD pipeline is built (Step 26).
 
 ---
 

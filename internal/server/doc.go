@@ -1,5 +1,5 @@
 // Package server is the routing layer. It maps incoming requests (by port
-// and path) to the registered honeypot.Service handlers, and wraps them
+// and path) to the registered services.Service handlers, and wraps them
 // with the cross-cutting middleware: per-IP rate limiting and full request
 // capture.
 //
