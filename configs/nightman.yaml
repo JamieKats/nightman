@@ -1,0 +1,31 @@
+# Nightman configuration.
+#
+# The database DSN is a secret: set NIGHTMAN_DB_DSN in the environment
+# rather than committing it here. NIGHTMAN_LOG_LEVEL overrides log_level.
+
+log_level: info   # debug | info | warn | error
+
+# Each listener binds one port. Services sharing a port are routed by path.
+listeners:
+  - port: 11434                        # Ollama-compatible
+    services: [ollama]
+  - port: 8080                         # OpenAI-compatible, vLLM, Anthropic-style
+    services: [openai, vllm, anthropic]
+
+# Per-source-IP token bucket, applied to every endpoint.
+rate_limit:
+  requests_per_second: 1
+  burst: 5
+
+# Asynchronous request-capture pipeline.
+capture:
+  queue_size: 1000   # records buffered before new ones are dropped
+
+# Fake token-by-token SSE responses.
+streaming:
+  token_interval_ms: 40   # delay between emitted tokens; 0 = as fast as possible
+
+database:
+  # Prefer NIGHTMAN_DB_DSN. For local-only use you may set it here instead:
+  # dsn: postgres://nightman_ingest:nightman@localhost:5432/nightman?sslmode=disable
+  dsn: ""
