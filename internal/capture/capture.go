@@ -3,7 +3,7 @@
 // X-Api-Key), raw and parsed body, timestamp, response status/latency,
 // and connection duration. Middleware wraps an http.Handler to build one
 // Record per request and hand it to a Sink — v1's is StdoutSink; the
-// Postgres-backed one lands in Phase 3.
+// Postgres-backed one lands in docs/plans/persistence.md.
 package capture
 
 import (

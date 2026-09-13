@@ -5,7 +5,7 @@
 //
 // Routing individual mocked services onto a shared port, the capture
 // middleware, and per-IP rate limiting are layered on top of this in
-// later build steps — see docs/IMPLEMENTATION_PLAN.md, Phase 2.
+// later build steps — see docs/architecture/overview.md.
 package server
 
 import (

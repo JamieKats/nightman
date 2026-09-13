@@ -12,15 +12,25 @@ engaged, never enough to fool a human or generate real content.
 
 ## Status
 
-Early scaffolding. The project layout and build plan are in place; service
-handlers and the capture pipeline are not implemented yet.
+Config loading, logging, the request-capture pipeline, the listener
+supervisor, the embedded response-template system, and the Ollama mock
+are built and tested. Not yet wired into the binary itself — see
+[docs/plans/wire-up-mvp.md](docs/plans/wire-up-mvp.md), the last step
+before the honeypot actually runs end to end.
 
 ## Documentation
 
-- [docs/PROJECT_BRIEF.md](docs/PROJECT_BRIEF.md) — concept, architecture,
+- [docs/PROJECT_BRIEF.md](docs/PROJECT_BRIEF.md) — the original concept,
   infrastructure, and design principles.
-- [docs/IMPLEMENTATION_PLAN.md](docs/IMPLEMENTATION_PLAN.md) — step-by-step
-  build order, milestones, and settled build decisions.
+- [docs/architecture/](docs/architecture/) — how the system works today,
+  updated as code changes. Start at
+  [overview.md](docs/architecture/overview.md).
+- [docs/plans/](docs/plans/) — how it's going to change, one doc per
+  remaining phase (Goal / Current architecture / Proposed design /
+  Constraints / Implementation Phases / Decisions / Open questions).
+- [docs/decisions/](docs/decisions/) — ADR-style records of significant
+  technical decisions: context, alternatives considered, rationale,
+  consequences.
 
 ## Layout
 
@@ -49,47 +59,21 @@ Go · PostgreSQL (JSONB) · GORM · Grafana · DigitalOcean · Terraform
 
 ## Design decisions
 
-A running log of the non-obvious calls made on this project and why. See
-[docs/IMPLEMENTATION_PLAN.md](docs/IMPLEMENTATION_PLAN.md#decisions) for
-the full build-decision table.
+The non-obvious calls made on this project, with full context/alternatives/
+rationale, now live in [docs/decisions/](docs/decisions/) as individual
+ADRs — good resume talking points:
 
-- **Managed Postgres, not self-hosted.** The app host is the thing
-  scanners and bots are actively attacking. Colocating the database on
-  that box would let a compromised honeypot process reach the data
-  locally regardless of DB-level role restrictions. A managed instance
-  puts the DB on its own network boundary, reachable only through the
-  roles below.
-- **Two Postgres roles: `nightman_ingest` (write) and `nightman_ro`
-  (read-only).** The Grafana dashboard is public; the ingestion service
-  isn't. Separate least-privilege roles make it structurally impossible
-  for the public-facing side to modify or exceed what it needs, rather
-  than relying on application logic to enforce that.
-- **DigitalOcean over AWS.** Equivalent AWS footprint (EC2 + ALB + RDS,
-  no NAT Gateway) runs noticeably more expensive than DO's bundled
-  Droplet + Load Balancer + Managed Database pricing for a project this
-  small, funded out of pocket. The architecture stays cloud-agnostic on
-  purpose (standard Postgres, stdlib HTTP, provider-specific pieces
-  isolated in Terraform) so a later AWS/GCP port is a Terraform rewrite,
-  not an application rewrite.
-- **Single Go binary, internally decoupled.** One process is simpler to
-  build, deploy, and log from while traffic volume is unproven. Each
-  mocked service implements the same `services.Service` interface and
-  knows nothing about the others, so any one of them can be lifted into
-  its own container later without a rewrite.
-- **GORM for queries, hand-written versioned SQL for schema.** Letting an
-  ORM auto-migrate a real database can't express the least-privilege role
-  grants above and risks running unreviewed schema changes against
-  production. GORM stays scoped to reads/writes; migrations are
-  plain, reviewable `.sql` files.
-- **No real inference, ever — not configurable, not an env flag.** Every
-  response is static or templated. This is a trust boundary, not a
-  performance choice: it keeps the system fully deterministic/auditable,
-  removes any cost-abuse or content-laundering risk, and means a
-  compromised honeypot can never be used to generate real harmful output.
-- **In-memory, per-process rate limiting (v1).** Good enough to stop the
-  honeypot itself being used as a traffic amplifier, without adding
-  Redis/shared state for a single-binary project at this scale. Revisit
-  if/when services split into separate processes.
+- [Managed Postgres, not self-hosted](docs/decisions/0008-managed-postgres-over-self-hosted.md)
+- [Separate ingest (write) and dashboard (read-only) DB roles](docs/decisions/0009-separate-ingest-and-readonly-db-roles.md)
+- [DigitalOcean over AWS](docs/decisions/0010-digitalocean-over-aws.md)
+- [Single Go binary, internally decoupled services](docs/decisions/0011-single-binary-decoupled-services.md)
+- [GORM for queries, hand-written versioned SQL for schema](docs/decisions/0002-gorm-with-versioned-sql-migrations.md)
+- [No real inference, ever](docs/decisions/0012-no-real-inference-ever.md)
+- [In-memory, per-process rate limiting (v1)](docs/decisions/0006-in-memory-rate-limiting.md)
+
+See [docs/decisions/](docs/decisions/) for the complete list, including
+the smaller build-tooling choices (config format, router, port map,
+capture durability, template storage).
 
 ## Prerequisites
 
@@ -119,4 +103,5 @@ go build ./...
 ```
 
 Local run instructions (Docker Compose, migrations, config) will land with
-the persistence milestone — see the implementation plan.
+the persistence milestone — see
+[docs/plans/persistence.md](docs/plans/persistence.md).

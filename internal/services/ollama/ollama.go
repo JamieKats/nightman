@@ -4,8 +4,8 @@
 //
 // v1 responses are non-streaming only, served byte-for-byte from
 // internal/response's template pools regardless of the probe's own
-// "stream" field or body content — see docs/IMPLEMENTATION_PLAN.md,
-// Phase 4 step 15 for streaming variants.
+// "stream" field or body content — see docs/plans/response-breadth.md
+// for streaming variants.
 package ollama
 
 import (

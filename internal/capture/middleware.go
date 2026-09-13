@@ -48,7 +48,7 @@ func Middleware(sink Sink, logger *slog.Logger, maxBodyBytes int64, service stri
 			rec.LatencyMS = time.Since(start).Milliseconds()
 			// v1 has no streaming yet, so one request's connection lasts
 			// exactly as long as it took to serve; they diverge once
-			// streaming (SSE/NDJSON) lands — see Phase 4.
+			// streaming (SSE/NDJSON) lands — see docs/plans/response-breadth.md.
 			rec.ConnectionDurationMS = rec.LatencyMS
 
 			sink.Capture(rec)

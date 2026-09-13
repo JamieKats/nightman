@@ -6,13 +6,13 @@ import "log/slog"
 // handled. Implementations must not block the request path: v1's
 // StdoutSink just logs; the future Postgres-backed sink batches writes
 // asynchronously and drops records under backpressure rather than
-// stalling a caller (see docs/IMPLEMENTATION_PLAN.md, Phase 3).
+// stalling a caller (see docs/plans/persistence.md).
 type Sink interface {
 	Capture(rec Record)
 }
 
 // StdoutSink logs every Record as one structured JSON line. It is the v1
-// sink; the real Postgres-backed sink lands in Phase 3.
+// sink; the real Postgres-backed sink lands in docs/plans/persistence.md.
 type StdoutSink struct {
 	logger *slog.Logger
 }

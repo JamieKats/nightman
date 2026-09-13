@@ -1,7 +1,9 @@
 # CLAUDE.md
 
-Working rules for this repo. Context: `docs/PROJECT_BRIEF.md` (what/why)
-and `docs/IMPLEMENTATION_PLAN.md` (build order, settled decisions).
+Working rules for this repo. Context: `docs/PROJECT_BRIEF.md` (what/why),
+`docs/architecture/` (how it works today), `docs/plans/` (what's next,
+one doc per remaining phase), and `docs/decisions/` (settled technical
+decisions, ADR-style).
 
 Nightman is an AI honeypot: it serves fake LLM-service endpoints to
 internet scanners and logs every request. No real inference, anywhere.

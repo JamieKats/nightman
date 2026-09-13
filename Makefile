@@ -1,6 +1,6 @@
 # Nightman — task runner.
 # Skeleton: the Go basics work now; infra targets are stubs that get
-# filled in as the corresponding milestones land (see docs/IMPLEMENTATION_PLAN.md).
+# filled in as the corresponding milestones land (see docs/plans/).
 
 BINARY  := nightman
 CMD     := ./cmd/nightman
@@ -62,13 +62,13 @@ tidy:
 	go mod tidy
 
 # ---------------------------------------------------------------------------
-# Local infra — TODO: implemented alongside Phase 3 (persistence)
+# Local infra — TODO: implemented alongside docs/plans/persistence.md
 # ---------------------------------------------------------------------------
 
 ## up: start local dependencies (Postgres, Grafana) via docker compose
 .PHONY: up
 up:
-	@echo "TODO: docker compose up -d  (needs docker-compose.yml — Phase 3, step 12)"
+	@echo "TODO: docker compose up -d  (needs docker-compose.yml — docs/plans/persistence.md)"
 
 ## down: stop local dependencies
 .PHONY: down
@@ -78,4 +78,4 @@ down:
 ## migrate: apply SQL migrations in ./migrations
 .PHONY: migrate
 migrate:
-	@echo "TODO: apply migrations/*.sql via psql  (Phase 3, step 9)"
+	@echo "TODO: apply migrations/*.sql via psql  (docs/plans/persistence.md)"

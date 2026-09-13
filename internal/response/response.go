@@ -1,9 +1,10 @@
 // Package response holds the canned template responses each mocked
 // service serves. v1 is a small fixed pool per endpoint (1-2 templates
-// for now; expands to ~10 at Phase 4 step 20) selected uniformly at
-// random per request — enough variety to avoid trivial byte-for-byte
-// fingerprinting. No dynamic generation, no per-request customization
-// based on the probe's content: every template is served byte-for-byte.
+// for now; expands to ~10 per docs/plans/response-breadth.md) selected
+// uniformly at random per request — enough variety to avoid trivial
+// byte-for-byte fingerprinting. No dynamic generation, no per-request
+// customization based on the probe's content: every template is served
+// byte-for-byte.
 package response
 
 import (

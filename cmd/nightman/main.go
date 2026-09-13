@@ -21,7 +21,8 @@ import (
 
 func main() {
 	// TODO: level comes from config.Config.LogLevel once config loading is
-	// wired in here (Phase 2, step 8). "info" is the config default too.
+	// wired in here — see docs/plans/wire-up-mvp.md. "info" is the config
+	// default too.
 	logger := logging.New(os.Stdout, "info")
 
 	if err := run(logger); err != nil {
