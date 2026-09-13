@@ -30,6 +30,7 @@ Follows [golang-standards/project-layout](https://github.com/golang-standards/pr
 cmd/nightman/        binary entrypoint
 internal/
   config/            YAML + env config loading
+  logging/           structured operational logging (log/slog)
   server/            routing layer (port/path -> service)
   services/          Service interface + per-service mocks
     ollama/  openai/  vllm/  anthropic/

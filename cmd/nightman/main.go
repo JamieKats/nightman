@@ -15,10 +15,14 @@ import (
 	"os/signal"
 	"syscall"
 	"time"
+
+	"github.com/JamieKats/nightman/internal/logging"
 )
 
 func main() {
-	logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
+	// TODO: level comes from config.Config.LogLevel once config loading is
+	// wired in here (Phase 2, step 8). "info" is the config default too.
+	logger := logging.New(os.Stdout, "info")
 
 	if err := run(logger); err != nil {
 		logger.Error("fatal", slog.Any("err", err))
