@@ -297,6 +297,15 @@ Deferred build choices (to experiment with once something is running):
 - testcontainers integration tests — spin up a real Postgres in CI to
   exercise the store against actual SQL, once the mocked-DB suite is
   stable. Added when the CI/CD pipeline is built (Step 26).
+- Cloud-provider agnosticism, enforced rather than just architectural —
+  v0.1 targets DigitalOcean only (see Decisions, below). The app layer is
+  already provider-neutral (standard Postgres, stdlib HTTP, no DO SDK
+  calls); what's deferred is formalizing that as a checked rule — e.g. a
+  CLAUDE.md constraint against provider-specific code outside
+  `deployments/terraform` — and actually proving portability with a
+  second Terraform target (AWS being the obvious one, see the cost
+  comparison this decision was weighed against). Revisit once v0.1 is
+  running on DO.
 
 ---
 
