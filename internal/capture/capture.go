@@ -1,8 +1,9 @@
 // Package capture records everything about an incoming probe: source IP
 // and port, method, path, full headers (esp. Authorization, User-Agent,
 // X-Api-Key), raw and parsed body, timestamp, response status/latency,
-// and connection duration. It hands finished records to a Sink (v1: a
-// stdout logger; later: the Postgres store).
+// and connection duration. Middleware wraps an http.Handler to build one
+// Record per request and hand it to a Sink — v1's is StdoutSink; the
+// Postgres-backed one lands in Phase 3.
 package capture
 
 import (
@@ -35,11 +36,15 @@ type Record struct {
 	ParsedBody any  // nil if the body was empty or not valid JSON
 	Truncated  bool // true if RawBody was capped at maxBodyBytes
 
-	// Set by the router once it knows which mocked service matched.
+	// RequestID correlates this record with the operational log lines
+	// for the same request (see internal/logging). Set by Middleware.
+	RequestID string
+
+	// Service is static per mounted handler, so Middleware is given it
+	// once at construction rather than it being inferred per request.
 	Service string
 
-	// Response-side, set by the capture middleware after the wrapped
-	// handler has run.
+	// Response-side, set by Middleware after the wrapped handler has run.
 	ResponseStatus       int
 	LatencyMS            int64
 	ConnectionDurationMS int64
