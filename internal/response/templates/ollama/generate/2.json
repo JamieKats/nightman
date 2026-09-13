@@ -1,0 +1,14 @@
+{
+  "model": "mistral:latest",
+  "created_at": "2024-03-18T08:42:11.987654Z",
+  "response": "Sure, I can help with that. Could you give me a bit more detail?",
+  "done": true,
+  "done_reason": "stop",
+  "context": [1, 733, 16289, 28793, 28705],
+  "total_duration": 4277091958,
+  "load_duration": 1871542,
+  "prompt_eval_count": 19,
+  "prompt_eval_duration": 296114000,
+  "eval_count": 231,
+  "eval_duration": 3978812000
+}

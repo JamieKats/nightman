@@ -1,0 +1,16 @@
+{
+  "model": "mistral:latest",
+  "created_at": "2024-03-18T08:42:11.987654Z",
+  "message": {
+    "role": "assistant",
+    "content": "I'm not able to access external systems, but I'm happy to help however I can from here."
+  },
+  "done": true,
+  "done_reason": "stop",
+  "total_duration": 3981734521,
+  "load_duration": 1654302,
+  "prompt_eval_count": 22,
+  "prompt_eval_duration": 301884000,
+  "eval_count": 214,
+  "eval_duration": 3601442000
+}

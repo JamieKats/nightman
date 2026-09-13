@@ -1,0 +1,34 @@
+{
+  "models": [
+    {
+      "name": "mistral:latest",
+      "model": "mistral:latest",
+      "modified_at": "2024-03-18T08:42:11Z",
+      "size": 4109865159,
+      "digest": "61e88e884507ba5e06c49fe86fca9c44b0c00836b1d1c11c5f23e64e6c6dcba",
+      "details": {
+        "parent_model": "",
+        "format": "gguf",
+        "family": "llama",
+        "families": ["llama"],
+        "parameter_size": "7.2B",
+        "quantization_level": "Q4_0"
+      }
+    },
+    {
+      "name": "codellama:7b",
+      "model": "codellama:7b",
+      "modified_at": "2024-02-02T14:05:47Z",
+      "size": 3825819519,
+      "digest": "8fdf8f752f6e0e0d3a46d2e4e2f33c93c7f1cba9a6d09f1f8b26d48d34dcd51e",
+      "details": {
+        "parent_model": "",
+        "format": "gguf",
+        "family": "llama",
+        "families": ["llama"],
+        "parameter_size": "7B",
+        "quantization_level": "Q4_0"
+      }
+    }
+  ]
+}
